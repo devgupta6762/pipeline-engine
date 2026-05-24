@@ -63,7 +63,7 @@ public class ThrottledMailerService {
 
                 // Defensive Cooldown Gate: Sleep for 5 minutes after every 10 emails [cite: 68, 70, 71]
                 if (batchCycleCounter % 10 == 0) {
-                    Thread.sleep(300000); // 300,000 milliseconds = 5 Minutes
+                    Thread.sleep(300000); // 300,000 millisecond = 5 Minutes
                 }
 
             } catch (Exception e) {
