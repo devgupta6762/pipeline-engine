@@ -13,8 +13,8 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 
-# Pull the compiled production artifact safely out of Stage 1
-COPY --from=build /app/target/pipeline-engine-0.0.1-SNAPSHOT.jar app.jar
+# Pull the fresh compiled production artifact safely out of Stage 1 using wildcard matching
+COPY --from=build /app/target/*.jar app.jar
 
 # Expose our Web API communication channel mapping port
 EXPOSE 8080
