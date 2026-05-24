@@ -6,18 +6,24 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 
-# Compile the source files and package the executable JAR file while bypassing local database checks
+# Compile the source files and package the executable JAR file
 RUN mvn clean package -DskipTests
 
 # --- Stage 2: Minimalist Lightweight Production Runtime Environment ---
 FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 
-# Pull the fresh compiled production artifact safely out of Stage 1 using wildcard matching
+# Pull the fresh compiled production artifact safely out of Stage 1
 COPY --from=build /app/target/*.jar app.jar
+
+# 🛠️ Hardcoded Environment Injection Matrix (Overrides ALL internal properties files)
+ENV SPRING_DATASOURCE_URL="jdbc:postgresql://aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres?options=-c%20search_path%3Dpublic"
+ENV SPRING_DATASOURCE_USERNAME="postgres.ifkyxlqktywjayfkyzed"
+ENV SPRING_DATASOURCE_PASSWORD="Nora@@@@@@262701@@"
+ENV SPRING_JPA_HIBERNATE_DDL_AUTO="update"
 
 # Expose our Web API communication channel mapping port
 EXPOSE 8080
 
 # Kick off our multi-batch execution engine on startup
-ENTRYPOINT ["java", "-jar", "app.jar", "--spring.config.location=classpath:/application.properties"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
